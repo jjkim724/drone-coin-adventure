@@ -1,5 +1,16 @@
 # 드론 코인 대모험 — 인터넷에 올리는 방법
 
+## ✅ 현재 올라가 있는 곳
+- 게임 주소: **https://jjkim724.github.io/drone-coin-adventure/**
+- 저장소: https://github.com/jjkim724/drone-coin-adventure (GitHub Pages, main 브랜치)
+- 게임을 고친 뒤 다시 올리기 (이 폴더에서 PowerShell로):
+  ```
+  git add -A
+  git commit -m "게임 수정"
+  git push
+  ```
+  1~2분 뒤 같은 주소에 반영됩니다.
+
 이 게임은 서버 프로그램이 필요 없는 **정적 웹사이트**(HTML + JS 파일)라서, 무료 호스팅에 파일만 올리면 어느 컴퓨터·태블릿·폰에서든 주소로 접속할 수 있어요.
 
 ## 올릴 파일 (이 4개만 있으면 됨)

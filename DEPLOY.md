@@ -3,6 +3,7 @@
 ## ✅ 현재 올라가 있는 곳
 - 게임 주소: **https://jjkim724.github.io/drone-coin-adventure/**
 - 저장소: https://github.com/jjkim724/drone-coin-adventure (GitHub Pages, main 브랜치)
+- **이 컴퓨터만 전체 열기 링크**: https://jjkim724.github.io/drone-coin-adventure/?unlock=dca-open-7319 (사용하는 브라우저마다 한 번씩 열기 · 잠그려면 주소 뒤에 `?lock`)
 - 게임을 고친 뒤 다시 올리기 (이 폴더에서 PowerShell로):
   ```
   git add -A

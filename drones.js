@@ -7,7 +7,7 @@ const DRONES = (() => {
   const SKINS = [
     { id: 'orange',  name: '주황 드론',   stage: 1, shape: 'classic', c1: '#ffb04d', c2: '#f57c00', edge: '#c45f00' },
     { id: 'blue',    name: '파랑 드론',   stage: 1, shape: 'classic', c1: '#7fd0ff', c2: '#1e88e5', edge: '#1259a8' },
-    { id: 'green',   name: '초록 드론',   stage: 2, shape: 'classic', c1: '#a5e57a', c2: '#43a047', edge: '#2e7d32' },
+    { id: 'green',   name: '초록 드론',   stage: 2, shape: 'classic', c1: '#a5e57a', c2: '#43a047', edge: '#2e7d32', bonusHeart: 1 },
     { id: 'pink',    name: '분홍 드론',   stage: 2, shape: 'classic', c1: '#ffb3d1', c2: '#ec407a', edge: '#b0285a' },
     { id: 'quad',    name: '쿼드콥터',    stage: 3, shape: 'quad',    c1: '#d1b3ff', c2: '#7c4dff', edge: '#5530c0' },
     { id: 'heli',    name: '헬리콥터',    stage: 3, shape: 'heli',    c1: '#fff59d', c2: '#fbc02d', edge: '#c49000' },
@@ -28,6 +28,23 @@ const DRONES = (() => {
     { id: 'galaxy',   name: '은하수 드론',   source: 'star', shape: 'classic',  galaxy: true, edge: '#311b92', special: true },
     { id: 'unicorn',  name: '유니콘 드론',   source: 'star', shape: 'unicorn',  c1: '#ffffff', c2: '#f8bbd0', edge: '#c2185b', special: true },
     { id: 'phoenix',  name: '불사조 드론',   source: 'star', shape: 'phoenix',  c1: '#ffcc80', c2: '#ff5722', edge: '#bf360c', special: true },
+    // 🎁 선물박스로 얻는 새 드론 (과일·동물)
+    { id: 'mango',       name: '망고 드론',     source: 'gift', shape: 'mango',       c1: '#ffe082', c2: '#ffa000', edge: '#c77800' },
+    { id: 'pineapple',   name: '파인애플 드론', source: 'gift', shape: 'pineapple',   c1: '#ffe57f', c2: '#fbc02d', edge: '#a87400' },
+    { id: 'orangefruit', name: '오렌지 드론',   source: 'gift', shape: 'orangeFruit', c1: '#ffb74d', c2: '#f57c00', edge: '#b45300' },
+    { id: 'strawberry',  name: '딸기 드론',     source: 'gift', shape: 'strawberry',  c1: '#ff6b81', c2: '#e53935', edge: '#a31515' },
+    { id: 'watermelon',  name: '수박 드론',     source: 'gift', shape: 'watermelon',  c1: '#81c784', c2: '#43a047', edge: '#1b5e20' },
+    { id: 'banana',      name: '바나나 드론',   source: 'gift', shape: 'banana',      c1: '#fff59d', c2: '#fdd835', edge: '#a89200' },
+    { id: 'penguin',     name: '펭귄 드론',     source: 'gift', shape: 'penguin',     c1: '#ffffff', c2: '#263238', edge: '#111' },
+    { id: 'rabbit',      name: '토끼 드론',     source: 'gift', shape: 'rabbit',      c1: '#ffffff', c2: '#eceff1', edge: '#b0bec5' },
+    { id: 'turtle',      name: '거북이 드론',   source: 'gift', shape: 'turtle',      c1: '#8bc34a', c2: '#558b2f', edge: '#33691e' },
+    // ⭐ 별로 얻는 새 특별 드론
+    { id: 'shark',   name: '상어 드론',   source: 'star', shape: 'shark',   c1: '#90a4ae', c2: '#546e7a', edge: '#37474f', special: true },
+    { id: 'tiger',   name: '호랑이 드론', source: 'star', shape: 'tiger',   c1: '#ffb74d', c2: '#f57c00', edge: '#8d4a00', special: true },
+    { id: 'octopus', name: '문어 드론',   source: 'star', shape: 'octopus', c1: '#ce93d8', c2: '#8e24aa', edge: '#5e1675', special: true },
+    { id: 'panda',   name: '판다 드론',   source: 'star', shape: 'panda',   c1: '#ffffff', c2: '#eeeeee', edge: '#9e9e9e', special: true },
+    { id: 'dragon',  name: '용 드론',     source: 'star', shape: 'dragon',  c1: '#81c784', c2: '#2e7d32', edge: '#1b5e20', special: true },
+    { id: 'robot',   name: '로봇 드론',   source: 'star', shape: 'robot',   c1: '#cfd8dc', c2: '#90a4ae', edge: '#546e7a', special: true },
   ];
 
   function rr(g, x, y, w, h, r) {
@@ -366,11 +383,259 @@ const DRONES = (() => {
     eyes(g, 6, -4, 0.8);
   }
 
-  const SHAPES = { classic, quad, heli, bee, rocket, ufo, plane, balloon, fish, butterfly, cat, car, starbody, crystal, unicorn, phoenix };
+  // ===== 새로 추가된 드론 15종 =====
+  function topRotor(g, rot, y = -24, half = 20) {
+    g.fillStyle = '#37474f'; g.fillRect(-1.5, y + 1, 3, 9);
+    rotor(g, 0, y, half, rot);
+  }
+  function armRotors(g, rot, y = -16, x = 32) {
+    g.strokeStyle = '#37474f'; g.lineWidth = 4;
+    g.beginPath(); g.moveTo(-12, -2); g.lineTo(-x, y + 4); g.moveTo(12, -2); g.lineTo(x, y + 4); g.stroke();
+    rotor(g, -x, y, 17, rot); rotor(g, x, y, 17, rot + 1);
+  }
+  function cheeks(g, x1, x2, y) {
+    g.fillStyle = 'rgba(255, 90, 90, 0.45)'; g.beginPath(); g.arc(x1, y, 3, 0, Math.PI * 2); g.arc(x2, y, 3, 0, Math.PI * 2); g.fill();
+  }
+  function mango(g, s, rot, t) {
+    topRotor(g, rot, -26);
+    g.save(); g.rotate(-0.25);
+    g.fillStyle = bodyFill(g, s, -16, 16); g.beginPath(); g.ellipse(0, 0, 25, 17, 0, 0, Math.PI * 2); g.fill();
+    g.strokeStyle = s.edge; g.lineWidth = 2; g.stroke();
+    g.fillStyle = 'rgba(255,90,60,0.35)'; g.beginPath(); g.ellipse(-10, -6, 12, 8, 0, 0, Math.PI * 2); g.fill();
+    g.restore();
+    g.fillStyle = '#43a047'; g.beginPath(); g.ellipse(-8, -18, 9, 4, -0.5, 0, Math.PI * 2); g.fill();
+    eyes(g, 3, -2); cheeks(g, -2, 18, 6);
+  }
+  function pineapple(g, s, rot, t) {
+    armRotors(g, rot, -12, 34);
+    g.fillStyle = '#2e7d32';
+    for (let i = -2; i <= 2; i++) { g.beginPath(); g.moveTo(i * 5 - 4, -14); g.lineTo(i * 7, -32 + Math.abs(i) * 4); g.lineTo(i * 5 + 4, -14); g.fill(); }
+    g.fillStyle = bodyFill(g, s, -16, 18); g.beginPath(); g.ellipse(0, 2, 20, 18, 0, 0, Math.PI * 2); g.fill();
+    g.save(); g.beginPath(); g.ellipse(0, 2, 20, 18, 0, 0, Math.PI * 2); g.clip();
+    g.strokeStyle = 'rgba(150,90,0,0.55)'; g.lineWidth = 1.3;
+    for (let k = -40; k < 40; k += 8) { g.beginPath(); g.moveTo(k, -20); g.lineTo(k + 40, 24); g.moveTo(k + 40, -20); g.lineTo(k, 24); g.stroke(); }
+    g.restore();
+    g.strokeStyle = s.edge; g.lineWidth = 2; g.beginPath(); g.ellipse(0, 2, 20, 18, 0, 0, Math.PI * 2); g.stroke();
+    eyes(g, 2, 0); cheeks(g, -3, 17, 8);
+  }
+  function orangeFruit(g, s, rot, t) {
+    topRotor(g, rot, -28);
+    g.fillStyle = bodyFill(g, s, -19, 19); g.beginPath(); g.arc(0, 0, 19, 0, Math.PI * 2); g.fill();
+    g.strokeStyle = s.edge; g.lineWidth = 2; g.stroke();
+    g.fillStyle = 'rgba(255,255,255,0.25)';
+    for (const [x, y] of [[-10, -4], [-6, 8], [8, 10], [-12, 6], [4, -12]]) { g.beginPath(); g.arc(x, y, 1.3, 0, Math.PI * 2); g.fill(); }
+    g.fillStyle = '#43a047'; g.beginPath(); g.ellipse(6, -19, 7, 3.5, 0.4, 0, Math.PI * 2); g.fill();
+    eyes(g, 2, -2); cheeks(g, -2, 17, 6);
+  }
+  function strawberry(g, s, rot, t) {
+    topRotor(g, rot, -30);
+    g.fillStyle = bodyFill(g, s, -16, 20);
+    g.beginPath(); g.moveTo(-20, -8); g.quadraticCurveTo(-22, 10, 0, 22); g.quadraticCurveTo(22, 10, 20, -8); g.quadraticCurveTo(0, -18, -20, -8); g.fill();
+    g.strokeStyle = s.edge; g.lineWidth = 2; g.stroke();
+    g.fillStyle = '#fff59d';
+    for (const [x, y] of [[-12, -2], [-6, 8], [0, 14], [-14, 6], [8, 10], [12, 2], [-4, -4]]) { g.beginPath(); g.ellipse(x, y, 1.2, 2, 0, 0, Math.PI * 2); g.fill(); }
+    g.fillStyle = '#2e7d32';
+    for (let i = -2; i <= 2; i++) { g.beginPath(); g.ellipse(i * 6, -13, 6, 3, i * 0.5, 0, Math.PI * 2); g.fill(); }
+    eyes(g, 3, 0, 0.9);
+  }
+  function watermelon(g, s, rot, t) {
+    topRotor(g, rot, -28);
+    g.fillStyle = s.c2; g.beginPath(); g.arc(0, 0, 20, 0, Math.PI * 2); g.fill();
+    g.save(); g.beginPath(); g.arc(0, 0, 20, 0, Math.PI * 2); g.clip();
+    g.strokeStyle = '#1b5e20'; g.lineWidth = 4;
+    for (let k = -16; k <= 16; k += 9) { g.beginPath(); g.moveTo(k, -22); g.quadraticCurveTo(k + 6, 0, k, 22); g.stroke(); }
+    g.restore();
+    g.strokeStyle = s.edge; g.lineWidth = 2; g.beginPath(); g.arc(0, 0, 20, 0, Math.PI * 2); g.stroke();
+    g.fillStyle = '#ffffff'; g.beginPath(); g.ellipse(7, -1, 12, 9, 0, 0, Math.PI * 2); g.fill();
+    eyes(g, 3, -1, 0.9);
+    g.fillStyle = '#e53935'; g.beginPath(); g.arc(8, 6, 3, 0, Math.PI); g.fill();
+  }
+  function banana(g, s, rot, t) {
+    armRotors(g, rot, -18, 30);
+    g.fillStyle = bodyFill(g, s, -10, 14);
+    g.beginPath(); g.moveTo(-30, -6); g.quadraticCurveTo(0, 26, 30, -6); g.quadraticCurveTo(0, 8, -30, -6); g.fill();
+    g.beginPath(); g.moveTo(-26, -4); g.quadraticCurveTo(0, 16, 26, -4); g.quadraticCurveTo(0, -12, -26, -4); g.fill();
+    g.strokeStyle = s.edge; g.lineWidth = 2;
+    g.beginPath(); g.moveTo(-30, -6); g.quadraticCurveTo(0, 26, 30, -6); g.stroke();
+    g.fillStyle = '#5d4037'; g.fillRect(-33, -9, 5, 5); g.fillRect(28, -9, 5, 5);
+    eyes(g, 0, 2, 0.85);
+  }
+  function shark(g, s, rot, t) {
+    const wag = Math.sin(t * 9) * 3;
+    g.fillStyle = s.c2; g.beginPath(); g.moveTo(-20, 0); g.lineTo(-36, -14 + wag); g.lineTo(-30, 0); g.lineTo(-36, 10 + wag); g.fill();
+    g.beginPath(); g.moveTo(-6, -11); g.lineTo(2, -28); g.lineTo(10, -11); g.fill();
+    g.fillStyle = '#37474f'; g.fillRect(1, -36, 3, 9); rotor(g, 2, -37, 16, rot);
+    g.fillStyle = bodyFill(g, s, -12, 12); g.beginPath(); g.ellipse(0, 0, 28, 13, 0, 0, Math.PI * 2); g.fill();
+    g.strokeStyle = s.edge; g.lineWidth = 2; g.stroke();
+    g.fillStyle = '#ffffff'; g.beginPath(); g.ellipse(4, 6, 20, 6, 0, 0, Math.PI); g.fill();
+    g.fillStyle = '#fff'; for (let x = 12; x < 26; x += 4) { g.beginPath(); g.moveTo(x, 3); g.lineTo(x + 2, 7); g.lineTo(x + 4, 3); g.fill(); }
+    g.strokeStyle = 'rgba(0,0,0,0.3)'; g.lineWidth = 1.2; for (const x of [-4, -1, 2]) { g.beginPath(); g.moveTo(x, -4); g.lineTo(x - 2, 4); g.stroke(); }
+    eyes(g, 10, -4, 0.75);
+  }
+  function tiger(g, s, rot, t) {
+    armRotors(g, rot, -18, 34);
+    const sw = Math.sin(t * 6) * 0.3;
+    g.save(); g.translate(-20, 4); g.rotate(sw);
+    g.strokeStyle = s.c2; g.lineWidth = 6; g.lineCap = 'round';
+    g.beginPath(); g.moveTo(0, 0); g.quadraticCurveTo(-18, 4, -16, -14); g.stroke();
+    g.strokeStyle = '#222'; g.lineWidth = 2; g.beginPath(); g.moveTo(-8, 3); g.lineTo(-10, -1); g.moveTo(-15, -4); g.lineTo(-19, -6); g.stroke();
+    g.restore(); g.lineCap = 'butt';
+    g.fillStyle = s.c2;
+    g.beginPath(); g.arc(-8, -13, 6, 0, Math.PI * 2); g.arc(10, -13, 6, 0, Math.PI * 2); g.fill();
+    g.fillStyle = '#ffccbc'; g.beginPath(); g.arc(-8, -13, 3, 0, Math.PI * 2); g.arc(10, -13, 3, 0, Math.PI * 2); g.fill();
+    g.save(); rr(g, -22, -12, 44, 28, 13); g.fillStyle = bodyFill(g, s, -12, 16); g.fill(); g.clip();
+    g.fillStyle = '#222';
+    for (const x of [-16, -8, 16]) { g.beginPath(); g.moveTo(x, -12); g.lineTo(x + 3, -4); g.lineTo(x + 6, -12); g.fill(); }
+    g.fillStyle = '#fff3e0'; g.beginPath(); g.ellipse(8, 8, 12, 7, 0, 0, Math.PI * 2); g.fill();
+    g.restore();
+    g.strokeStyle = s.edge; g.lineWidth = 2; rr(g, -22, -12, 44, 28, 13); g.stroke();
+    eyes(g, 3, -1);
+    g.fillStyle = '#5d4037'; g.beginPath(); g.moveTo(10, 6); g.lineTo(16, 6); g.lineTo(13, 9); g.fill();
+  }
+  function penguin(g, s, rot, t) {
+    topRotor(g, rot, -30, 18);
+    g.fillStyle = '#ff9800'; g.beginPath(); g.ellipse(-6, 20, 6, 3, 0, 0, Math.PI * 2); g.ellipse(8, 20, 6, 3, 0, 0, Math.PI * 2); g.fill();
+    g.fillStyle = '#263238'; g.beginPath(); g.ellipse(0, 0, 19, 22, 0, 0, Math.PI * 2); g.fill();
+    g.beginPath(); g.ellipse(-18, 2, 5, 12, 0.4, 0, Math.PI * 2); g.fill();
+    g.fillStyle = '#ffffff'; g.beginPath(); g.ellipse(4, 4, 12, 16, 0, 0, Math.PI * 2); g.fill();
+    eyes(g, 0, -8, 0.8);
+    g.fillStyle = '#ff9800'; g.beginPath(); g.moveTo(10, -3); g.lineTo(20, 0); g.lineTo(10, 3); g.fill();
+    cheeks(g, -2, 16, 3);
+  }
+  function octopus(g, s, rot, t) {
+    topRotor(g, rot, -30);
+    g.strokeStyle = s.c2; g.lineWidth = 5; g.lineCap = 'round';
+    for (let i = 0; i < 5; i++) {
+      const x = -14 + i * 7, w = Math.sin(t * 6 + i) * 4;
+      g.beginPath(); g.moveTo(x, 8); g.quadraticCurveTo(x + w, 18, x - w, 26); g.stroke();
+    }
+    g.lineCap = 'butt';
+    g.fillStyle = bodyFill(g, s, -20, 12); g.beginPath(); g.ellipse(0, -4, 20, 18, 0, 0, Math.PI * 2); g.fill();
+    g.strokeStyle = s.edge; g.lineWidth = 2; g.stroke();
+    g.fillStyle = 'rgba(255,255,255,0.35)'; for (const [x, y] of [[-10, -12], [-4, -16], [-12, -4]]) { g.beginPath(); g.arc(x, y, 2.5, 0, Math.PI * 2); g.fill(); }
+    eyes(g, 2, -4); cheeks(g, -2, 18, 4);
+  }
+  function panda(g, s, rot, t) {
+    armRotors(g, rot, -18, 34);
+    g.fillStyle = '#222'; g.beginPath(); g.arc(-12, -15, 7, 0, Math.PI * 2); g.arc(12, -15, 7, 0, Math.PI * 2); g.fill();
+    g.fillStyle = bodyFill(g, s, -16, 16); g.beginPath(); g.ellipse(0, 0, 22, 18, 0, 0, Math.PI * 2); g.fill();
+    g.strokeStyle = s.edge; g.lineWidth = 2; g.stroke();
+    g.fillStyle = '#222'; g.beginPath(); g.ellipse(4, -2, 6, 7, 0.4, 0, Math.PI * 2); g.ellipse(14, -2, 5, 6, -0.4, 0, Math.PI * 2); g.fill();
+    g.fillStyle = '#fff'; g.beginPath(); g.arc(5, -2, 2.6, 0, Math.PI * 2); g.arc(14, -2, 2.4, 0, Math.PI * 2); g.fill();
+    g.fillStyle = '#222'; g.beginPath(); g.arc(6, -2, 1.4, 0, Math.PI * 2); g.arc(15, -2, 1.3, 0, Math.PI * 2); g.fill();
+    g.beginPath(); g.ellipse(10, 6, 3, 2, 0, 0, Math.PI * 2); g.fill();
+    cheeks(g, -2, 20, 7);
+  }
+  function dragon(g, s, rot, t) {
+    const flap = Math.sin(t * 8);
+    g.fillStyle = s.c2; g.beginPath(); g.moveTo(-18, 2); g.quadraticCurveTo(-38, 10, -44, -6); g.lineTo(-36, -2); g.quadraticCurveTo(-30, 2, -18, -4); g.fill();
+    g.save(); g.translate(-4, -8); g.rotate(-0.5 + flap * 0.5);
+    g.fillStyle = '#81c784'; g.beginPath(); g.moveTo(0, 0); g.lineTo(-6, -30); g.lineTo(6, -22); g.lineTo(14, -28); g.lineTo(16, -4); g.fill();
+    g.restore();
+    g.fillStyle = bodyFill(g, s, -13, 13); g.beginPath(); g.ellipse(0, 0, 22, 13, 0, 0, Math.PI * 2); g.fill();
+    g.strokeStyle = s.edge; g.lineWidth = 2; g.stroke();
+    g.fillStyle = '#ffeb3b'; for (const x of [-14, -6, 2]) { g.beginPath(); g.moveTo(x, -11); g.lineTo(x + 3, -18); g.lineTo(x + 6, -11); g.fill(); }
+    g.fillStyle = bodyFill(g, s, -16, 8); g.beginPath(); g.ellipse(20, -6, 11, 9, 0, 0, Math.PI * 2); g.fill();
+    g.fillStyle = '#fff59d'; g.beginPath(); g.moveTo(16, -14); g.lineTo(14, -24); g.lineTo(20, -14); g.fill(); g.beginPath(); g.moveTo(22, -14); g.lineTo(24, -24); g.lineTo(26, -13); g.fill();
+    g.fillStyle = '#fff3e0'; g.beginPath(); g.ellipse(4, 6, 12, 5, 0, 0, Math.PI); g.fill();
+    eyes(g, 17, -8, 0.7);
+    g.fillStyle = '#1b5e20'; g.beginPath(); g.arc(29, -4, 1.3, 0, Math.PI * 2); g.fill();
+  }
+  function rabbit(g, s, rot, t) {
+    armRotors(g, rot, -12, 34);
+    g.fillStyle = bodyFill(g, s, -40, 0);
+    g.beginPath(); g.ellipse(-6, -24, 5, 14, -0.15, 0, Math.PI * 2); g.ellipse(8, -24, 5, 14, 0.15, 0, Math.PI * 2); g.fill();
+    g.fillStyle = '#f8bbd0'; g.beginPath(); g.ellipse(-6, -24, 2.5, 10, -0.15, 0, Math.PI * 2); g.ellipse(8, -24, 2.5, 10, 0.15, 0, Math.PI * 2); g.fill();
+    g.fillStyle = bodyFill(g, s, -14, 16); g.beginPath(); g.ellipse(0, 2, 21, 16, 0, 0, Math.PI * 2); g.fill();
+    g.strokeStyle = s.edge; g.lineWidth = 2; g.stroke();
+    g.fillStyle = '#fff'; g.beginPath(); g.arc(-21, 6, 5, 0, Math.PI * 2); g.fill();
+    eyes(g, 2, 0);
+    g.fillStyle = '#ec407a'; g.beginPath(); g.arc(15, 6, 2, 0, Math.PI * 2); g.fill();
+    cheeks(g, -2, 20, 8);
+  }
+  function turtle(g, s, rot, t) {
+    topRotor(g, rot, -28, 20);
+    g.fillStyle = '#a5d6a7';
+    g.beginPath(); g.ellipse(-14, 12, 5, 4, 0, 0, Math.PI * 2); g.ellipse(12, 12, 5, 4, 0, 0, Math.PI * 2); g.ellipse(-24, 6, 5, 2.5, 0, 0, Math.PI * 2); g.fill();
+    g.beginPath(); g.ellipse(24, 0, 9, 8, 0, 0, Math.PI * 2); g.fill();
+    eyes(g, 21, -2, 0.6);
+    g.fillStyle = bodyFill(g, s, -18, 8); g.beginPath(); g.ellipse(-2, 4, 22, 18, 0, Math.PI, 0); g.closePath(); g.fill();
+    g.strokeStyle = s.edge; g.lineWidth = 2; g.stroke();
+    g.fillStyle = 'rgba(255,255,255,0.25)';
+    for (const [x, y] of [[-10, -4], [2, -6], [-4, -12], [8, 0], [-16, 1]]) { g.beginPath(); g.arc(x, y, 4, 0, Math.PI * 2); g.fill(); }
+    g.fillStyle = '#6d4c41'; g.fillRect(-24, 2, 44, 4);
+  }
+  function robot(g, s, rot, t) {
+    armRotors(g, rot, -18, 34);
+    g.strokeStyle = '#78909c'; g.lineWidth = 2; g.beginPath(); g.moveTo(0, -16); g.lineTo(0, -26); g.stroke();
+    g.fillStyle = (Math.floor(t * 4) % 2) ? '#ff5252' : '#40c4ff'; g.beginPath(); g.arc(0, -27, 3.5, 0, Math.PI * 2); g.fill();
+    g.fillStyle = bodyFill(g, s, -16, 16); rr(g, -20, -16, 40, 32, 6); g.fill();
+    g.strokeStyle = s.edge; g.lineWidth = 2; g.stroke();
+    g.fillStyle = '#263238'; rr(g, -12, -9, 30, 12, 4); g.fill();
+    g.fillStyle = '#40c4ff'; g.fillRect(-6, -6, 7, 6); g.fillRect(7, -6, 7, 6);
+    g.fillStyle = '#90a4ae'; for (let x = -10; x < 14; x += 5) g.fillRect(x, 7, 3, 4);
+    g.fillStyle = '#ffca28'; g.beginPath(); g.arc(-22, 0, 3, 0, Math.PI * 2); g.arc(22, 0, 3, 0, Math.PI * 2); g.fill();
+  }
+
+  const SHAPES = { classic, quad, heli, bee, rocket, ufo, plane, balloon, fish, butterfly, cat, car, starbody, crystal, unicorn, phoenix,
+    mango, pineapple, orangeFruit, strawberry, watermelon, banana, shark, tiger, penguin, octopus, panda, dragon, rabbit, turtle, robot };
+
+  // ===== 특수 기능 (드론마다 1개, 한 판에 3번) =====
+  // type: shield(방패) proj(발사) cone(앞으로 내뿜기) swipe(주변 휘두르기) ring(퍼지는 파동) beam(레이저)
+  //       lightning(번개) clear(화면의 새 모두 퇴치) tocoins(새를 코인으로) magnet(코인 자석) slow(느리게)
+  //       double(코인 2배) dash(돌진) heal(하트 회복)
+  const ABILITIES = {
+    magnet:    { name: '코인 자석',      icon: '🧲', type: 'magnet', dur: 6, desc: '6초 동안 코인을 끌어당겨요' },
+    bubble:    { name: '물방울 방패',    icon: '💧', type: 'shield', dur: 5, look: 'bubble', desc: '5초 동안 새를 막아요' },
+    clover:    { name: '네잎클로버 방패', icon: '🍀', type: 'shield', dur: 6, look: 'clover', desc: '6초 동안 네잎클로버가 지켜줘요' },
+    heal:      { name: '사랑의 하트',    icon: '💗', type: 'heal', desc: '하트를 1개 채워요' },
+    missiles:  { name: '미니 미사일',    icon: '🎯', type: 'proj', look: 'missile', shots: [-0.12, 0.12], speed: 620, r: 10, desc: '미사일 2발로 새를 물리쳐요' },
+    wind:      { name: '회오리 바람',    icon: '🌀', type: 'cone', dur: 1.3, len: 260, look: 'wind', desc: '바람으로 앞의 새를 날려 보내요' },
+    sting:     { name: '벌침 발사',      icon: '🐝', type: 'proj', look: 'sting', shots: [-0.08, 0, 0.08], speed: 700, r: 8, desc: '벌침 3개를 쏴요' },
+    dash:      { name: '로켓 돌진',      icon: '🚀', type: 'dash', dur: 3, desc: '3초 동안 부딪히는 새를 물리쳐요' },
+    ufoBeam:   { name: 'UFO 광선',       icon: '🛸', type: 'beam', dur: 1, look: 'ufo', desc: '앞으로 긴 광선을 쏴요' },
+    rainbow:   { name: '무지개 마법',    icon: '🌈', type: 'tocoins', desc: '화면의 새가 모두 코인으로 변해요' },
+    bullets:   { name: '연속 발사',      icon: '✈️', type: 'proj', look: 'bullet', shots: [0, 0, 0, 0, 0], burst: 0.09, speed: 800, r: 7, desc: '총알 5발을 연달아 쏴요' },
+    slow:      { name: '느릿느릿 구름',  icon: '⏳', type: 'slow', dur: 5, desc: '5초 동안 모두 느려져요' },
+    bubbles:   { name: '거품 발사',      icon: '🔵', type: 'proj', look: 'bubble', shots: [-0.2, 0, 0.2], speed: 480, r: 14, desc: '거품 3개로 새를 가둬요' },
+    pollen:    { name: '잠자는 꽃가루',  icon: '💤', type: 'cone', dur: 1.4, len: 240, look: 'pollen', desc: '꽃가루로 새를 재워요' },
+    meow:      { name: '냐옹 파동',      icon: '🐾', type: 'ring', radius: 300, desc: '퍼지는 소리로 주변 새를 쫓아요' },
+    smoke:     { name: '매연 뿜기',      icon: '💨', type: 'cone', dur: 1.4, len: 240, look: 'smoke', desc: '매연을 뿜어서 새를 물리쳐요' },
+    double:    { name: '코인 2배',       icon: '✨', type: 'double', dur: 7, desc: '7초 동안 코인이 2배!' },
+    crystal:   { name: '크리스탈 방패',  icon: '💎', type: 'shield', dur: 6, look: 'crystal', desc: '6초 동안 단단한 방패' },
+    warp:      { name: '은하수 워프',    icon: '🌌', type: 'clear', desc: '화면의 새를 모두 물리쳐요' },
+    uniBeam:   { name: '무지개 광선',    icon: '🦄', type: 'beam', dur: 1.2, look: 'rainbow', desc: '무지개 광선을 쏴요' },
+    fire:      { name: '불 뿜기',        icon: '火', type: 'cone', dur: 1.5, len: 270, look: 'fire', desc: '불을 내뿜어서 새를 물리쳐요' },
+    bigSeed:   { name: '왕 씨앗',        icon: '🥭', type: 'proj', look: 'bigseed', shots: [0], speed: 520, r: 22, pierce: true, desc: '큰 씨앗이 새를 뚫고 날아가요' },
+    spikes:    { name: '가시 발사',      icon: '🍍', type: 'proj', look: 'spike', shots: [-0.36, -0.18, 0, 0.18, 0.36], speed: 650, r: 8, desc: '가시 5개를 부채꼴로 쏴요' },
+    juice:     { name: '오렌지 주스',    icon: '🍊', type: 'cone', dur: 1.4, len: 250, look: 'juice', desc: '주스를 뿜어서 새를 물리쳐요' },
+    wave:      { name: '큰 파도',        icon: '🌊', type: 'proj', look: 'wave', shots: [0], speed: 420, r: 55, pierce: true, desc: '큰 파도가 새를 쓸어가요' },
+    seeds:     { name: '딸기씨 발사',    icon: '🍓', type: 'proj', look: 'seed', shots: [-0.15, 0, 0.15], speed: 700, r: 7, desc: '씨앗 3개를 쏴요' },
+    tail:      { name: '꼬리 휘두르기',  icon: '🐯', type: 'swipe', dur: 0.7, radius: 130, desc: '꼬리로 주변 새를 물리쳐요' },
+    melonBomb: { name: '수박 폭탄',      icon: '🍉', type: 'proj', look: 'melon', shots: [0], speed: 460, r: 16, bomb: 140, desc: '수박이 펑! 터져요' },
+    boomerang: { name: '바나나 부메랑',  icon: '🍌', type: 'proj', look: 'banana', shots: [0], speed: 760, r: 14, pierce: true, boomerang: true, desc: '갔다가 돌아오는 부메랑' },
+    ice:       { name: '꽁꽁 얼음',      icon: '❄️', type: 'cone', dur: 1.3, len: 250, look: 'ice', desc: '얼음으로 새를 얼려요' },
+    ink:       { name: '먹물 구름',      icon: '🐙', type: 'cone', dur: 1.4, len: 240, look: 'ink', desc: '먹물로 새를 쫓아요' },
+    bamboo:    { name: '대나무 창',      icon: '🎋', type: 'proj', look: 'bamboo', shots: [0], speed: 760, r: 12, pierce: true, desc: '대나무가 길게 날아가요' },
+    lightning: { name: '번개',           icon: '⚡', type: 'lightning', count: 4, desc: '가까운 새 4마리에 번개!' },
+    carrots:   { name: '당근 발사',      icon: '🥕', type: 'proj', look: 'carrot', shots: [-0.1, 0.1], speed: 650, r: 9, desc: '당근 2개를 쏴요' },
+    shell:     { name: '등껍질 방패',    icon: '🐢', type: 'shield', dur: 7, look: 'shell', desc: '7초 동안 등껍질로 숨어요' },
+    laser:     { name: '로봇 레이저',    icon: '🤖', type: 'beam', dur: 1.1, look: 'laser', desc: '레이저로 새를 물리쳐요' },
+  };
+  const ABILITY_OF = {
+    orange: 'magnet', blue: 'bubble', green: 'clover', pink: 'heal', quad: 'missiles', heli: 'wind', bee: 'sting', rocket: 'dash',
+    ufo: 'ufoBeam', rainbow: 'rainbow', plane: 'bullets', balloon: 'slow', fish: 'bubbles', butterfly: 'pollen', cat: 'meow',
+    car: 'smoke', goldstar: 'double', crystal: 'crystal', galaxy: 'warp', unicorn: 'uniBeam', phoenix: 'fire',
+    mango: 'bigSeed', pineapple: 'spikes', orangefruit: 'juice', shark: 'wave', strawberry: 'seeds', tiger: 'tail',
+    watermelon: 'melonBomb', banana: 'boomerang', penguin: 'ice', octopus: 'ink', panda: 'bamboo', dragon: 'lightning',
+    rabbit: 'carrots', turtle: 'shell', robot: 'laser',
+  };
+  SKINS.forEach((s) => { s.ability = ABILITIES[ABILITY_OF[s.id]]; });
 
 
   return {
     skins: SKINS,
+    abilities: ABILITIES,
     get(id) { return SKINS.find((s) => s.id === id) || SKINS[0]; },
     // 고를 수 있는지: 단계 드론은 열린 단계로, 선물/별 드론은 얻었는지로 판단
     isAvailable(s, unlockedStage, owned) { return s.stage ? s.stage <= unlockedStage : owned.has(s.id); },

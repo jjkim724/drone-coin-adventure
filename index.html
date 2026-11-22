@@ -42,6 +42,27 @@
   #upBtn.pressed { transform: translateY(5px); box-shadow: 0 1px 0 #c35f00, 0 4px 10px rgba(0,0,0,.3); }
   #upBtn.show { display: flex; }
 
+  /* 특수 기능 버튼 */
+  #skillBtn {
+    position: absolute; right: 4.6%; bottom: 31%;
+    width: 9%; aspect-ratio: 1; border-radius: 50%;
+    border: 4px solid #fff; background: radial-gradient(circle at 35% 30%, #d1b3ff, #7c4dff);
+    box-shadow: 0 5px 0 #5530c0, 0 8px 16px rgba(0,0,0,.3);
+    display: none; align-items: center; justify-content: center; padding: 0;
+    cursor: pointer; touch-action: none; opacity: .85; font-family: var(--font);
+  }
+  #skillBtn.show { display: flex; }
+  #skillBtn:active { transform: translateY(4px); box-shadow: 0 1px 0 #5530c0; }
+  #skillBtn .ic { font-size: clamp(16px, 3.2vw, 36px); line-height: 1; }
+  #skillBtn.hanja .ic { font-family: 'Malgun Gothic', 'Microsoft YaHei', serif; font-weight: bold; color: #ffeb3b;
+    text-shadow: 0 0 6px #ff5722, 0 2px 0 #b71c1c; }
+  #skillBtn .cnt {
+    position: absolute; top: -8%; right: -8%; min-width: 38%; aspect-ratio: 1; border-radius: 50%;
+    background: #ff4d6d; color: #fff; border: 3px solid #fff; font-size: clamp(10px, 1.6vw, 18px);
+    display: flex; align-items: center; justify-content: center;
+  }
+  #skillBtn.empty { filter: grayscale(1); opacity: .45; }
+
   #muteBtn {
     position: absolute; top: 1.6%; right: 1.2%;
     width: 5.2%; aspect-ratio: 1; border-radius: 50%; border: 3px solid #fff;
@@ -88,16 +109,19 @@
   .stageBtn:disabled { filter: grayscale(1); opacity: .5; cursor: not-allowed; }
   .stageBtn:not(:disabled):active { transform: translateY(3px); box-shadow: 0 1px 0 #e0b84f; }
   .panel.wide { width: 94%; padding: 1% 2%; }
-  .panel.wide h2 { margin: 0; }
+  .panel.wide h2 { margin: 0; font-size: clamp(16px, 2.8vw, 32px); }
+  .panel.wide .btns { margin-top: 1%; }
   .panel.wide h1 { margin: 0 0 .15em; }
   .panel.wide .howto p { margin: .15em 0; }
-  .panel.wide .stages { width: 80%; margin: 1.5% auto .5%; }
+  .panel.wide .stages { width: 100%; margin: 1.2% auto .5%; grid-template-columns: repeat(8, 1fr); gap: 6px; }
+  .panel.wide .stageBtn { font-size: clamp(8px, 1.2vw, 15px); padding: 1.5% 1%; white-space: nowrap; overflow: hidden; }
   .panel.wide p { margin: .2em 0; }
   .panel small { font-size: .85em; color: #7a6a55; }
-  .droneGrid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin: 1% 0 0; }
+  .droneGrid { display: grid; grid-template-columns: repeat(9, 1fr); gap: 4px; margin: .5% 0 0; }
+  .abInfo { background: #f3e5ff; border-radius: 12px; padding: .3em .8em; font-size: clamp(11px, 1.6vw, 18px) !important; }
   .droneCard {
     font-family: var(--font); border: 4px solid #e8dcc0; background: #eaf7ff; border-radius: 16px;
-    padding: 1% 1% 3%; cursor: pointer; color: #4a3a28; font-size: clamp(9px, 1.3vw, 16px);
+    padding: 1% 1% 2%; cursor: pointer; color: #4a3a28; font-size: clamp(8px, 1.15vw, 14px); border-width: 3px;
     display: flex; flex-direction: column; align-items: center; box-shadow: 0 4px 0 #d8ccb0;
   }
   .droneCard canvas { width: 100%; aspect-ratio: 8 / 5; }
@@ -117,6 +141,7 @@
   <div id="wrap">
     <canvas id="game"></canvas>
     <button id="upBtn" aria-label="위로 가기"><span class="arrow">▲</span>위로</button>
+    <button id="skillBtn" aria-label="특수 기능"><span class="ic">✨</span><span class="cnt">3</span></button>
     <button id="muteBtn" aria-label="소리 켜기/끄기">🔊</button>
     <div id="overlay"><div class="panel" id="panel"></div></div>
   </div>

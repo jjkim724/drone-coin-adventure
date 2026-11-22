@@ -1012,7 +1012,380 @@ const BG = (() => {
     },
   };
 
-  const STAGES = [seoul, boston, daejeon, newyork, playground, paris, london, chicago, la, space];
+  // ---------- 11단계: 샌프란시스코 ----------
+  function goldenGate(g, x0, x1) {
+    const red = '#c0392b', dark = '#962d22', tA = x0 + 170, tB = x1 - 170, top = B - 300, dy = B - 85;
+    g.strokeStyle = red; g.lineWidth = 4;
+    const cable = (ax, ay, cx, cy, bx, by) => {
+      g.beginPath(); g.moveTo(ax, ay); g.quadraticCurveTo(cx, cy, bx, by); g.stroke();
+      g.save(); g.strokeStyle = 'rgba(150,40,30,0.7)'; g.lineWidth = 1;
+      for (let x = Math.min(ax, bx) + 8; x < Math.max(ax, bx) - 4; x += 12) {
+        const t = (x - ax) / (bx - ax);
+        const y = (1 - t) * (1 - t) * ay + 2 * t * (1 - t) * cy + t * t * by;
+        g.beginPath(); g.moveTo(x, y); g.lineTo(x, dy); g.stroke();
+      }
+      g.restore();
+    };
+    cable(x0, dy, (x0 + tA) / 2, dy - 10, tA, top + 12);
+    cable(tA, top + 12, (tA + tB) / 2, dy + 70, tB, top + 12);
+    cable(tB, top + 12, (tB + x1) / 2, dy - 10, x1, dy);
+    g.fillStyle = red; g.fillRect(x0, dy, x1 - x0, 9);
+    g.fillStyle = dark; g.fillRect(x0, dy + 9, x1 - x0, 6);
+    g.strokeStyle = dark; g.lineWidth = 1.5;
+    for (let x = x0; x < x1; x += 14) { g.beginPath(); g.moveTo(x, dy + 9); g.lineTo(x + 7, dy + 15); g.lineTo(x + 14, dy + 9); g.stroke(); }
+    for (const tx of [tA, tB]) {
+      g.fillStyle = red; g.fillRect(tx - 24, top, 14, B - top); g.fillRect(tx + 10, top, 14, B - top);
+      g.fillStyle = dark; g.fillRect(tx + 18, top, 6, B - top);
+      g.fillStyle = red; for (const y of [top, top + 60, top + 125, dy - 34]) g.fillRect(tx - 24, y, 48, 12);
+      g.fillStyle = '#9e9e9e'; g.fillRect(tx - 30, B - 12, 60, 12);
+    }
+  }
+  function transamerica(g, cx) {
+    g.fillStyle = '#eef1f4'; g.beginPath(); g.moveTo(cx - 34, B); g.lineTo(cx - 4, B - 330); g.lineTo(cx + 4, B - 330); g.lineTo(cx + 34, B); g.fill();
+    g.fillStyle = '#d5dbe1'; g.beginPath(); g.moveTo(cx, B - 330); g.lineTo(cx + 4, B - 330); g.lineTo(cx + 34, B); g.lineTo(cx, B); g.fill();
+    g.fillStyle = '#e3e8ec';
+    g.beginPath(); g.moveTo(cx - 22, B - 160); g.lineTo(cx - 30, B - 160); g.lineTo(cx - 12, B - 240); g.lineTo(cx - 10, B - 220); g.fill();
+    g.beginPath(); g.moveTo(cx + 22, B - 160); g.lineTo(cx + 30, B - 160); g.lineTo(cx + 12, B - 240); g.lineTo(cx + 10, B - 220); g.fill();
+    g.fillStyle = '#9fb0c0';
+    for (let y = B - 310; y < B - 10; y += 9) { const hw = 34 * (B - y) / 330 - 4; for (let x = cx - hw; x < cx + hw; x += 6) g.fillRect(x, y, 2, 4); }
+    g.fillStyle = '#cfd8dc'; g.fillRect(cx - 1, B - 368, 2, 40);
+  }
+  function paintedLady(g, x, w, h, col) {
+    g.fillStyle = col; g.fillRect(x, B - h, w, h);
+    g.fillStyle = '#fafafa'; g.fillRect(x - 2, B - h, w + 4, 5);
+    g.fillStyle = col; g.beginPath(); g.moveTo(x - 4, B - h); g.lineTo(x + w / 2, B - h - 34); g.lineTo(x + w + 4, B - h); g.fill();
+    g.strokeStyle = '#fafafa'; g.lineWidth = 3; g.stroke();
+    g.fillStyle = '#ffffff'; g.fillRect(x + 6, B - h + 14, 22, h - 50);
+    g.fillStyle = '#5c7a99'; g.fillRect(x + 9, B - h + 18, 7, 18); g.fillRect(x + 18, B - h + 18, 7, 18); g.fillRect(x + 9, B - h + 44, 7, 18); g.fillRect(x + 18, B - h + 44, 7, 18);
+    g.fillRect(x + w - 20, B - h + 18, 10, 16); g.fillRect(x + w / 2 - 4, B - h - 20, 8, 12);
+    g.fillStyle = '#6d4c41'; g.fillRect(x + w - 22, B - 30, 14, 30);
+    g.fillStyle = '#fafafa'; g.fillRect(x + w - 26, B - 34, 22, 4);
+  }
+  function cableCar(g, x) {
+    g.fillStyle = '#c62828'; rr(g, x, B - 30, 90, 26, 5); g.fill();
+    g.fillStyle = '#fff3e0'; g.fillRect(x + 4, B - 26, 82, 10);
+    g.fillStyle = '#5d4037'; for (let k = 0; k < 6; k++) g.fillRect(x + 8 + k * 13, B - 25, 8, 8);
+    g.fillStyle = '#8d6e63'; g.fillRect(x - 4, B - 34, 98, 5);
+    g.fillStyle = '#222'; g.beginPath(); g.arc(x + 18, B - 2, 5, 0, Math.PI * 2); g.arc(x + 72, B - 2, 5, 0, Math.PI * 2); g.fill();
+  }
+  const sanfrancisco = {
+    name: '샌프란시스코', desc: '금문교 · 트랜스아메리카 피라미드 · 페인티드 레이디 · 케이블카',
+    sky: ['#7fb9e6', '#e7f2fb'], sun: { x: 820, y: 95, r: 34, c: '#fff4c4' },
+    far: (g, w) => {
+      hills(g, w, 360, '#a7c4a0', [[2, 36, 0.4], [5, 16, 1.6], [9, 6, 0.3]]);
+      g.fillStyle = 'rgba(255,255,255,0.55)';
+      for (let x = 0; x < w; x += 160) { g.beginPath(); g.ellipse(x + 60, 390, 140, 22, 0, 0, Math.PI * 2); g.fill(); }
+      hills(g, w, 430, '#93b48a', [[3, 14, 1], [7, 6, 2]]);
+    },
+    mid: (g, w) => {
+      cityFill(g, 111, 1050, 1340, 60, 160, ['#d7d2c8', '#c9c4bb', '#e1ddd4'], 'rgba(120,140,160,0.6)');
+      goldenGate(g, 120, 980);
+      transamerica(g, 1200);
+      ['#f8bbd0', '#b3e5fc', '#fff59d', '#c5e1a5', '#d1c4e9'].forEach((c, i) => paintedLady(g, 1370 + i * 72, 64, 120 + (i % 2) * 10, c));
+      g.fillStyle = '#86b36e'; g.beginPath(); g.moveTo(1740, B); g.quadraticCurveTo(1830, B - 90, 1910, B); g.fill();
+      g.fillStyle = '#f5f5f5'; g.fillRect(1818, B - 150, 22, 104); g.fillStyle = '#e0e0e0'; g.fillRect(1814, B - 156, 30, 8);
+      g.fillStyle = '#90a4ae'; for (let k = 0; k < 4; k++) g.fillRect(1820 + k * 5, B - 148, 2, 10);
+      cableCar(g, 1600);
+    },
+    ground: (g, w) => {
+      g.fillStyle = '#9e9e9e'; g.fillRect(0, B - 2, w, 8);
+      g.fillStyle = '#2f80c2'; g.fillRect(0, B + 6, w, H - B - 6);
+      g.strokeStyle = 'rgba(255,255,255,0.45)'; g.lineWidth = 2;
+      for (let x = 0; x < w; x += 40) { g.beginPath(); g.moveTo(x, B + 24 + (x % 80 ? 8 : 0)); g.quadraticCurveTo(x + 10, B + 18 + (x % 80 ? 8 : 0), x + 20, B + 24 + (x % 80 ? 8 : 0)); g.stroke(); }
+      for (const x of [200, 640]) {
+        g.fillStyle = '#ffffff'; g.beginPath(); g.moveTo(x, B + 14); g.lineTo(x + 70, B + 14); g.lineTo(x + 62, B + 26); g.lineTo(x + 6, B + 26); g.fill();
+        g.fillStyle = '#ffca28'; g.fillRect(x + 14, B + 4, 40, 10);
+      }
+    },
+  };
+
+  // ---------- 12단계: 워싱턴 DC ----------
+  function cherryTree(g, x, base, s = 1) {
+    g.fillStyle = '#6d4c41'; g.fillRect(x - 3 * s, base - 20 * s, 6 * s, 20 * s);
+    g.fillStyle = '#f8bbd0';
+    g.beginPath(); g.arc(x, base - 30 * s, 16 * s, 0, Math.PI * 2); g.arc(x - 12 * s, base - 22 * s, 11 * s, 0, Math.PI * 2); g.arc(x + 12 * s, base - 22 * s, 11 * s, 0, Math.PI * 2); g.fill();
+    g.fillStyle = '#f48fb1'; for (const [dx, dy] of [[-6, -34], [8, -28], [-12, -20], [4, -20]]) { g.beginPath(); g.arc(x + dx * s, base + dy * s, 2.5 * s, 0, Math.PI * 2); g.fill(); }
+  }
+  function washingtonMonument(g, cx) {
+    g.fillStyle = '#f3f1ea'; g.beginPath(); g.moveTo(cx - 18, B); g.lineTo(cx - 12, B - 380); g.lineTo(cx, B - 410); g.lineTo(cx + 12, B - 380); g.lineTo(cx + 18, B); g.fill();
+    g.fillStyle = '#d9d5c8'; g.beginPath(); g.moveTo(cx, B - 410); g.lineTo(cx + 12, B - 380); g.lineTo(cx + 18, B); g.lineTo(cx + 2, B); g.fill();
+    g.fillStyle = '#e8e2d2'; g.fillRect(cx - 14, B - 150, 30, 3);
+    for (let k = -3; k <= 3; k++) {
+      const x = cx + k * 16; g.strokeStyle = '#bbb'; g.lineWidth = 1.5; g.beginPath(); g.moveTo(x, B); g.lineTo(x, B - 30); g.stroke();
+      g.fillStyle = k % 2 ? '#e53935' : '#1e40af'; g.fillRect(x + 1, B - 30, 8, 5);
+    }
+  }
+  function capitol(g, cx) {
+    g.fillStyle = '#f7f5ef'; g.fillRect(cx - 230, B - 80, 460, 80);
+    g.fillStyle = '#d9d4c7'; for (let x = cx - 222; x < cx + 222; x += 14) if (Math.abs(x - cx) > 92) g.fillRect(x, B - 70, 4, 56);
+    g.fillStyle = '#ffffff'; g.fillRect(cx - 92, B - 112, 184, 112);
+    g.fillStyle = '#d9d4c7'; for (let x = cx - 80; x < cx + 80; x += 16) g.fillRect(x, B - 100, 6, 74);
+    g.fillStyle = '#ffffff'; g.beginPath(); g.moveTo(cx - 96, B - 112); g.lineTo(cx, B - 140); g.lineTo(cx + 96, B - 112); g.fill();
+    g.fillStyle = '#f3f0e8'; g.fillRect(cx - 62, B - 190, 124, 52);
+    g.fillStyle = '#d0cabc'; for (let x = cx - 56; x < cx + 56; x += 12) g.fillRect(x, B - 186, 5, 44);
+    const dg = g.createLinearGradient(cx - 62, 0, cx + 62, 0); dg.addColorStop(0, '#e0dbcf'); dg.addColorStop(0.4, '#ffffff'); dg.addColorStop(1, '#c9c2b2');
+    g.fillStyle = dg; g.beginPath(); g.ellipse(cx, B - 190, 62, 70, 0, Math.PI, 0); g.fill();
+    g.strokeStyle = 'rgba(150,140,120,0.5)'; g.lineWidth = 1.2;
+    for (const k of [0.3, 0.6, 0.85]) { g.beginPath(); g.ellipse(cx, B - 190, 62 * k, 70, 0, Math.PI, 0); g.stroke(); }
+    g.fillStyle = '#f7f5ef'; g.fillRect(cx - 12, B - 278, 24, 20);
+    g.beginPath(); g.arc(cx, B - 278, 12, Math.PI, 0); g.fill();
+    g.fillStyle = '#8d8d8d'; g.fillRect(cx - 2, B - 304, 4, 16); g.beginPath(); g.arc(cx, B - 306, 4, 0, Math.PI * 2); g.fill();
+  }
+  function whiteHouse(g, cx) {
+    g.fillStyle = '#fafafa'; g.fillRect(cx - 140, B - 84, 280, 84);
+    g.fillStyle = '#9fb3c8';
+    for (let x = cx - 128; x < cx + 128; x += 22) { if (Math.abs(x - cx + 4) < 46) continue; g.fillRect(x, B - 72, 10, 16); g.fillRect(x, B - 38, 10, 16); }
+    g.fillStyle = '#ffffff'; g.beginPath(); g.ellipse(cx, B - 4, 50, 14, 0, Math.PI, 0); g.fill();
+    g.fillStyle = '#e0e0e0'; for (let x = cx - 40; x <= cx + 36; x += 13) g.fillRect(x, B - 88, 6, 84);
+    g.fillStyle = '#f0f0f0'; g.fillRect(cx - 52, B - 96, 104, 10); g.fillRect(cx - 144, B - 92, 288, 8);
+    g.strokeStyle = '#bbb'; g.lineWidth = 2; g.beginPath(); g.moveTo(cx, B - 96); g.lineTo(cx, B - 130); g.stroke();
+    for (let k = 0; k < 5; k++) { g.fillStyle = k % 2 ? '#fff' : '#e53935'; g.fillRect(cx + 1, B - 130 + k * 3, 22, 3); }
+    g.fillStyle = '#1e40af'; g.fillRect(cx + 1, B - 130, 9, 9);
+  }
+  function lincolnMemorial(g, cx) {
+    g.fillStyle = '#d9d4c7'; g.fillRect(cx - 120, B - 18, 240, 18); g.fillRect(cx - 108, B - 28, 216, 10);
+    g.fillStyle = '#f5f2ea'; g.fillRect(cx - 100, B - 120, 200, 92);
+    g.fillStyle = '#7c7466'; g.fillRect(cx - 90, B - 108, 180, 80);
+    g.fillStyle = '#f5f2ea'; for (let i = 0; i < 12; i++) g.fillRect(cx - 96 + i * 16.6, B - 110, 9, 82);
+    g.fillStyle = '#ece7dc'; g.fillRect(cx - 104, B - 140, 208, 22); g.fillRect(cx - 90, B - 158, 180, 18);
+    g.fillStyle = '#c9c2b2'; g.fillRect(cx - 14, B - 64, 28, 30);
+  }
+  const washington = {
+    name: '워싱턴 DC', desc: '국회의사당 · 워싱턴 기념탑 · 백악관 · 링컨 기념관 · 벚꽃',
+    sky: ['#79b8ee', '#eaf5ff'], sun: { x: 820, y: 90, r: 34, c: '#fff5c8' },
+    far: (g, w) => {
+      hills(g, w, 420, '#a8d19e', [[2, 18, 0.4], [6, 8, 1.4]]);
+      const r = rng(121); for (let x = 20; x < w; x += 40 + r() * 30) tree(g, x, 440, 0.9 + r() * 0.4, '#7cb86f');
+    },
+    mid: (g, w) => {
+      washingtonMonument(g, 260);
+      capitol(g, 720);
+      whiteHouse(g, 1220);
+      lincolnMemorial(g, 1640);
+      for (const x of [90, 420, 480, 990, 1050, 1420, 1830, 1880]) cherryTree(g, x, B, 1.2);
+    },
+    ground: (g, w) => {
+      g.fillStyle = '#8bc34a'; g.fillRect(0, B - 4, w, 12);
+      g.fillStyle = '#cfd8dc'; g.fillRect(0, B + 8, w, 6);
+      g.fillStyle = '#6fb3e0'; g.fillRect(0, B + 14, w, 22);
+      g.fillStyle = 'rgba(255,255,255,0.35)'; for (let x = 10; x < w; x += 60) g.fillRect(x, B + 22, 26, 2);
+      g.fillStyle = '#cfd8dc'; g.fillRect(0, B + 36, w, H - B - 36);
+      g.fillStyle = '#f8bbd0'; for (let x = 7; x < w; x += 31) { g.beginPath(); g.arc(x, B + 4, 2, 0, Math.PI * 2); g.fill(); }
+    },
+  };
+
+  // ---------- 13단계: 세종시 ----------
+  function govComplex(g, x0, x1) {
+    const r = rng(131); let x = x0, h = 60;
+    while (x < x1) {
+      const w = 70 + r() * 30; h = Math.max(45, Math.min(100, h + (r() - 0.5) * 30));
+      g.fillStyle = '#e8eaed'; g.fillRect(x, B - h, w + 2, h);
+      g.fillStyle = '#8fb0cc'; for (let yy = B - h + 14; yy < B - 8; yy += 12) g.fillRect(x + 4, yy, w - 6, 5);
+      g.fillStyle = '#7cb342'; g.fillRect(x - 1, B - h - 7, w + 4, 8);
+      for (let tx = x + 10; tx < x + w; tx += 22) { g.fillStyle = '#558b2f'; g.beginPath(); g.arc(tx, B - h - 10, 6, 0, Math.PI * 2); g.fill(); }
+      x += w;
+    }
+  }
+  function sejongLibrary(g, cx) {
+    g.fillStyle = '#f5f5f5';
+    g.beginPath(); g.moveTo(cx - 130, B); g.lineTo(cx - 130, B - 60); g.quadraticCurveTo(cx + 10, B - 60, cx + 130, B - 160); g.lineTo(cx + 130, B); g.closePath(); g.fill();
+    g.strokeStyle = '#bdbdbd'; g.lineWidth = 3; g.beginPath(); g.moveTo(cx - 130, B - 60); g.quadraticCurveTo(cx + 10, B - 60, cx + 130, B - 160); g.stroke();
+    g.fillStyle = '#90caf9'; g.fillRect(cx - 124, B - 46, 248, 30);
+    g.strokeStyle = 'rgba(255,255,255,0.8)'; g.lineWidth = 1; for (let x = cx - 120; x < cx + 124; x += 12) { g.beginPath(); g.moveTo(x, B - 46); g.lineTo(x, B - 16); g.stroke(); }
+  }
+  function ieungBridge(g, cx) {
+    g.strokeStyle = '#b0bec5'; g.lineWidth = 4;
+    for (let k = -4; k <= 4; k++) { const x = cx + k * 38; g.beginPath(); g.moveTo(x, B - 30); g.lineTo(x, B); g.stroke(); }
+    g.strokeStyle = '#eceff1'; g.lineWidth = 12; g.beginPath(); g.ellipse(cx, B - 40, 180, 30, 0, 0, Math.PI * 2); g.stroke();
+    g.strokeStyle = '#90a4ae'; g.lineWidth = 2; g.beginPath(); g.ellipse(cx, B - 46, 180, 30, 0, 0, Math.PI * 2); g.stroke();
+    g.strokeStyle = '#4fc3f7'; g.lineWidth = 3; g.beginPath(); g.ellipse(cx, B - 34, 182, 31, 0, 0.1, Math.PI - 0.1); g.stroke();
+  }
+  function apartment(g, x, w, h, col, num) {
+    g.fillStyle = col; g.fillRect(x, B - h, w, h);
+    g.fillStyle = 'rgba(255,255,255,0.85)'; for (let yy = B - h + 10; yy < B - 6; yy += 10) g.fillRect(x + 4, yy, w - 8, 4);
+    g.fillStyle = '#5d6d7e'; g.font = 'bold 13px sans-serif'; g.textAlign = 'center'; g.fillText(num, x + w / 2, B - h + 4 + 13);
+  }
+  const sejong = {
+    name: '세종', desc: '정부세종청사 · 국립세종도서관 · 이응다리 · 세종호수공원',
+    sky: ['#86cff5', '#effaff'], sun: { x: 830, y: 95, r: 36, c: '#fff1a8' },
+    far: (g, w) => {
+      hills(g, w, 370, '#94c3a0', [[2, 34, 0.9], [4, 18, 0.2], [9, 6, 1.4]]);
+      hills(g, w, 430, '#7fb48b', [[3, 14, 1.7], [8, 5, 0.6]]);
+    },
+    mid: (g, w) => {
+      govComplex(g, 40, 760);
+      sejongLibrary(g, 940);
+      ieungBridge(g, 1320);
+      ['#f3e5d8', '#e3ecf3', '#efe7f5', '#e8f3e3'].forEach((c, i) => apartment(g, 1560 + i * 82, 62, 200 + (i % 2) * 40, c, `${101 + i}동`));
+      for (const x of [800, 1100, 1530]) tree(g, x, B, 1.1, '#43a047');
+    },
+    ground: (g, w) => {
+      g.fillStyle = '#8bc34a'; g.fillRect(0, B - 4, w, 14);
+      g.fillStyle = '#4fb0e5'; g.fillRect(0, B + 10, w, H - B - 10);
+      g.fillStyle = 'rgba(255,255,255,0.4)'; for (let x = 15; x < w; x += 55) g.fillRect(x, B + 24 + (x % 110 ? 8 : 0), 24, 3);
+      for (const x of [260, 700]) {
+        g.fillStyle = '#ffffff'; g.beginPath(); g.ellipse(x, B + 22, 16, 8, 0, 0, Math.PI * 2); g.fill();
+        g.beginPath(); g.arc(x + 12, B + 12, 7, 0, Math.PI * 2); g.fill();
+        g.fillStyle = '#ff7043'; g.beginPath(); g.moveTo(x + 18, B + 11); g.lineTo(x + 25, B + 13); g.lineTo(x + 18, B + 15); g.fill();
+      }
+    },
+  };
+
+  // ---------- 14단계: 마드리드 ----------
+  function royalPalace(g, cx) {
+    g.fillStyle = '#efe7d6'; g.fillRect(cx - 230, B - 130, 460, 130);
+    g.fillStyle = '#ddd1b8'; g.fillRect(cx - 230, B - 44, 460, 44);
+    g.fillStyle = '#8fa3b5';
+    for (let x = cx - 218; x < cx + 218; x += 26) { g.fillRect(x, B - 112, 12, 26); g.beginPath(); g.arc(x + 6, B - 112, 6, Math.PI, 0); g.fill(); g.fillRect(x, B - 74, 12, 22); }
+    g.fillStyle = '#e3d8c2'; for (let x = cx - 224; x < cx + 224; x += 26) g.fillRect(x - 4, B - 124, 4, 80);
+    g.fillStyle = '#f5efe1'; g.fillRect(cx - 236, B - 140, 472, 12);
+    for (let x = cx - 230; x < cx + 230; x += 30) { g.fillStyle = '#d8ccb3'; g.fillRect(x, B - 154, 6, 14); g.beginPath(); g.arc(x + 3, B - 156, 4, 0, Math.PI * 2); g.fill(); }
+    g.fillStyle = '#f5efe1'; g.fillRect(cx - 70, B - 160, 140, 30);
+    g.beginPath(); g.moveTo(cx - 76, B - 160); g.lineTo(cx, B - 184); g.lineTo(cx + 76, B - 160); g.fill();
+    g.fillStyle = '#c9a227'; g.beginPath(); g.arc(cx, B - 170, 6, 0, Math.PI * 2); g.fill();
+  }
+  function puertaAlcala(g, cx) {
+    g.fillStyle = '#ddd0b2'; g.fillRect(cx - 130, B - 140, 260, 140);
+    g.fillStyle = '#cfc09f'; g.fillRect(cx - 134, B - 150, 268, 12);
+    g.fillStyle = '#5f5546';
+    for (const ox of [-55, 0, 55]) { g.fillRect(cx + ox - 16, B - 90, 32, 90); g.beginPath(); g.arc(cx + ox, B - 90, 16, Math.PI, 0); g.fill(); }
+    for (const ox of [-106, 106]) g.fillRect(cx + ox - 10, B - 70, 20, 70);
+    g.fillStyle = '#e6dac0'; for (const ox of [-80, -28, 28, 80]) g.fillRect(cx + ox - 4, B - 138, 8, 138);
+    g.fillStyle = '#ddd0b2'; g.fillRect(cx - 50, B - 182, 100, 32);
+    g.beginPath(); g.moveTo(cx - 54, B - 182); g.lineTo(cx, B - 204); g.lineTo(cx + 54, B - 182); g.fill();
+    g.fillStyle = '#b9a984'; g.beginPath(); g.arc(cx, B - 166, 12, 0, Math.PI * 2); g.fill();
+  }
+  function cibeles(g, cx) {
+    g.fillStyle = '#90caf9'; g.beginPath(); g.ellipse(cx, B - 6, 70, 12, 0, 0, Math.PI * 2); g.fill();
+    g.strokeStyle = '#cfd8dc'; g.lineWidth = 4; g.stroke();
+    g.fillStyle = '#e0e0e0'; g.fillRect(cx - 30, B - 46, 60, 34);
+    g.fillStyle = '#bdbdbd'; g.beginPath(); g.arc(cx - 20, B - 14, 9, 0, Math.PI * 2); g.arc(cx + 20, B - 14, 9, 0, Math.PI * 2); g.fill();
+    g.fillStyle = '#c8c8c8'; g.beginPath(); g.ellipse(cx - 44, B - 34, 16, 10, 0, 0, Math.PI * 2); g.ellipse(cx - 62, B - 40, 7, 7, 0, 0, Math.PI * 2); g.fill();
+    g.fillStyle = '#e8e8e8'; g.beginPath(); g.moveTo(cx - 12, B - 46); g.lineTo(cx - 6, B - 86); g.lineTo(cx + 6, B - 86); g.lineTo(cx + 12, B - 46); g.fill();
+    g.beginPath(); g.arc(cx, B - 92, 7, 0, Math.PI * 2); g.fill();
+    g.strokeStyle = 'rgba(255,255,255,0.8)'; g.lineWidth = 2;
+    for (const k of [-1, 1]) { g.beginPath(); g.moveTo(cx + k * 34, B - 20); g.quadraticCurveTo(cx + k * 50, B - 44, cx + k * 60, B - 8); g.stroke(); }
+  }
+  function cuatroTorres(g, x0) {
+    g.fillStyle = '#3d5a73'; g.fillRect(x0, B - 320, 18, 320); g.fillRect(x0 + 52, B - 320, 18, 320);
+    g.fillStyle = '#8fb3d1'; g.fillRect(x0 + 18, B - 280, 34, 280); g.fillStyle = '#3d5a73'; g.fillRect(x0, B - 330, 70, 14);
+    g.fillStyle = '#5f8fae'; rr(g, x0 + 100, B - 300, 70, 300, 18); g.fill();
+    windows(g, x0 + 100, B - 300, 70, 300, 'rgba(255,255,255,0.4)', 6, 6, 10, 10);
+    g.fillStyle = '#9ec6e3'; g.beginPath(); g.moveTo(x0 + 200, B); g.lineTo(x0 + 200, B - 300); g.lineTo(x0 + 270, B - 330); g.lineTo(x0 + 270, B); g.fill();
+    g.fillStyle = '#66bb6a'; g.beginPath(); g.moveTo(x0 + 200, B - 300); g.lineTo(x0 + 270, B - 330); g.lineTo(x0 + 270, B - 322); g.lineTo(x0 + 200, B - 294); g.fill();
+    g.fillStyle = '#c7d3dd'; g.beginPath(); g.moveTo(x0 + 300, B); g.lineTo(x0 + 300, B - 260); g.quadraticCurveTo(x0 + 335, B - 300, x0 + 370, B - 260); g.lineTo(x0 + 370, B); g.fill();
+    windows(g, x0 + 300, B - 260, 70, 260, '#8ea3b5', 6, 6, 10, 10);
+  }
+  function bearTree(g, cx) {
+    g.fillStyle = '#9e9e9e'; g.fillRect(cx - 34, B - 26, 68, 26);
+    g.fillStyle = '#6d4c41'; g.fillRect(cx + 10, B - 90, 8, 64);
+    g.fillStyle = '#388e3c'; g.beginPath(); g.arc(cx + 14, B - 104, 26, 0, Math.PI * 2); g.arc(cx + 30, B - 92, 16, 0, Math.PI * 2); g.fill();
+    g.fillStyle = '#e53935'; for (const [x, y] of [[0, -110], [24, -100], [14, -88], [34, -110], [6, -96]]) { g.beginPath(); g.arc(cx + x, B + y, 3.5, 0, Math.PI * 2); g.fill(); }
+    g.fillStyle = '#5d4037'; g.beginPath(); g.ellipse(cx - 8, B - 52, 15, 26, 0.2, 0, Math.PI * 2); g.fill();
+    g.beginPath(); g.arc(cx - 2, B - 82, 11, 0, Math.PI * 2); g.fill(); g.beginPath(); g.arc(cx - 8, B - 92, 4, 0, Math.PI * 2); g.arc(cx + 4, B - 92, 4, 0, Math.PI * 2); g.fill();
+    g.strokeStyle = '#5d4037'; g.lineWidth = 7; g.lineCap = 'round'; g.beginPath(); g.moveTo(cx - 2, B - 66); g.lineTo(cx + 10, B - 80); g.stroke(); g.lineCap = 'butt';
+  }
+  const madrid = {
+    name: '마드리드', desc: '왕궁 · 알칼라 문 · 시벨레스 분수 · 쿠아트로 토레스',
+    sky: ['#5fb0f0', '#fff0d0'], sun: { x: 800, y: 100, r: 40, c: '#ffe082' },
+    far: (g, w) => {
+      cityFill(g, 141, 10, w - 100, 50, 120, ['#e8d9c0', '#f0e2cc', '#dfcfb5'], null);
+    },
+    mid: (g, w) => {
+      cityFill(g, 142, 20, w - 120, 50, 110, ['#e9c9a5', '#f3d8b6', '#d9b48f', '#f1e0c8'], 'rgba(120,90,70,0.45)',
+        [[100, 600], [640, 1100], [1220, 1600], [1720, 1860]]);
+      royalPalace(g, 350);
+      puertaAlcala(g, 800);
+      cibeles(g, 1050);
+      cuatroTorres(g, 1230);
+      bearTree(g, 1780);
+    },
+    ground: (g, w) => {
+      g.fillStyle = '#e6d3b3'; g.fillRect(0, B - 4, w, H - B + 4);
+      g.strokeStyle = 'rgba(160,130,90,0.4)'; g.lineWidth = 1;
+      for (let x = 0; x < w; x += 24) { g.beginPath(); g.moveTo(x, B); g.lineTo(x - 10, H); g.stroke(); }
+      for (let y = B + 10; y < H; y += 12) { g.beginPath(); g.moveTo(0, y); g.lineTo(w, y); g.stroke(); }
+      for (const x of [120, 470, 820]) {
+        g.fillStyle = '#795548'; g.fillRect(x, B - 4, 90, 10);
+        g.fillStyle = '#e53935'; for (let k = 0; k < 9; k++) { g.beginPath(); g.arc(x + 6 + k * 10, B - 6, 4, 0, Math.PI * 2); g.fill(); }
+        g.fillStyle = '#43a047'; for (let k = 0; k < 9; k++) g.fillRect(x + 5 + k * 10, B - 2, 3, 4);
+      }
+    },
+  };
+
+  // ---------- 15단계: 공룡시대 ----------
+  function volcano(g, cx, base, w, h, col) {
+    g.fillStyle = col; g.beginPath(); g.moveTo(cx - w, base); g.lineTo(cx - 24, base - h); g.lineTo(cx + 24, base - h); g.lineTo(cx + w, base); g.fill();
+    g.fillStyle = '#ff7043'; g.beginPath(); g.ellipse(cx, base - h, 24, 6, 0, 0, Math.PI * 2); g.fill();
+    g.fillStyle = '#ff5722';
+    g.beginPath(); g.moveTo(cx - 10, base - h); g.quadraticCurveTo(cx - 20, base - h + 60, cx - 38, base - h + 110); g.lineTo(cx - 30, base - h + 110); g.quadraticCurveTo(cx - 12, base - h + 60, cx - 2, base - h); g.fill();
+    g.fillStyle = 'rgba(120,110,110,0.55)';
+    for (let k = 0; k < 4; k++) { g.beginPath(); g.arc(cx + k * 14 - 6, base - h - 20 - k * 22, 14 + k * 5, 0, Math.PI * 2); g.fill(); }
+  }
+  function brachio(g, cx) {
+    const c = '#7a9a62';
+    g.fillStyle = c;
+    g.beginPath(); g.ellipse(cx, B - 70, 70, 38, 0, 0, Math.PI * 2); g.fill();
+    for (const ox of [-46, -22, 22, 46]) g.fillRect(cx + ox - 9, B - 50, 18, 50);
+    g.beginPath(); g.moveTo(cx - 64, B - 80); g.quadraticCurveTo(cx - 130, B - 70, cx - 160, B - 30); g.lineTo(cx - 150, B - 26); g.quadraticCurveTo(cx - 120, B - 56, cx - 60, B - 60); g.fill();
+    g.beginPath(); g.moveTo(cx + 40, B - 96); g.quadraticCurveTo(cx + 70, B - 200, cx + 100, B - 250); g.lineTo(cx + 120, B - 244); g.quadraticCurveTo(cx + 88, B - 190, cx + 66, B - 80); g.fill();
+    g.beginPath(); g.ellipse(cx + 122, B - 252, 22, 12, 0.2, 0, Math.PI * 2); g.fill();
+    g.fillStyle = '#222'; g.beginPath(); g.arc(cx + 128, B - 256, 2.5, 0, Math.PI * 2); g.fill();
+    g.fillStyle = 'rgba(255,255,255,0.15)'; g.beginPath(); g.ellipse(cx - 10, B - 92, 40, 10, 0, 0, Math.PI * 2); g.fill();
+  }
+  function stego(g, cx) {
+    g.fillStyle = '#ff8a65';
+    for (let k = 0; k < 6; k++) { const x = cx - 50 + k * 20; g.beginPath(); g.moveTo(x - 9, B - 50); g.lineTo(x, B - 80 + Math.abs(k - 2.5) * 6); g.lineTo(x + 9, B - 50); g.fill(); }
+    g.fillStyle = '#8d9f5a'; g.beginPath(); g.ellipse(cx, B - 36, 62, 26, 0, 0, Math.PI * 2); g.fill();
+    for (const ox of [-36, -14, 16, 38]) g.fillRect(cx + ox - 7, B - 22, 14, 22);
+    g.beginPath(); g.moveTo(cx - 58, B - 40); g.quadraticCurveTo(cx - 100, B - 40, cx - 116, B - 20); g.lineTo(cx - 56, B - 26); g.fill();
+    g.beginPath(); g.ellipse(cx + 66, B - 28, 14, 9, 0, 0, Math.PI * 2); g.fill();
+    g.fillStyle = '#222'; g.beginPath(); g.arc(cx + 72, B - 30, 2, 0, Math.PI * 2); g.fill();
+    g.fillStyle = '#fff3e0'; for (const x of [-112, -104]) { g.beginPath(); g.moveTo(cx + x, B - 22); g.lineTo(cx + x - 4, B - 34); g.lineTo(cx + x + 4, B - 24); g.fill(); }
+  }
+  function fern(g, x, base, s) {
+    g.strokeStyle = '#2e7d32'; g.lineWidth = 3;
+    for (let k = -3; k <= 3; k++) {
+      const a = -Math.PI / 2 + k * 0.32;
+      g.beginPath(); g.moveTo(x, base); g.quadraticCurveTo(x + Math.cos(a) * 30 * s, base + Math.sin(a) * 40 * s, x + Math.cos(a) * 55 * s, base + Math.sin(a) * 45 * s + 18 * s); g.stroke();
+    }
+  }
+  function cycad(g, x, base, h) {
+    g.fillStyle = '#795548'; g.fillRect(x - 6, base - h, 12, h);
+    g.fillStyle = '#5d4037'; for (let y = base - h; y < base; y += 8) g.fillRect(x - 6, y, 12, 2);
+    g.strokeStyle = '#388e3c'; g.lineWidth = 5;
+    for (let k = 0; k < 8; k++) { const a = -Math.PI + (k / 7) * Math.PI; g.beginPath(); g.moveTo(x, base - h); g.quadraticCurveTo(x + Math.cos(a) * 26, base - h - 22, x + Math.cos(a) * 44, base - h + Math.sin(a) * 10 + 16); g.stroke(); }
+  }
+  const dinosaur = {
+    name: '공룡시대', desc: '화산 · 브라키오사우루스 · 스테고사우루스 · 익룡 조심!',
+    sky: ['#ff9966', '#ffe0b2'], sun: { x: 780, y: 110, r: 50, c: '#ffcc80' },
+    far: (g, w) => {
+      hills(g, w, 360, '#b58a7a', [[2, 40, 0.3], [5, 20, 1.2], [11, 8, 2]]);
+      volcano(g, 520, 420, 220, 220, '#7a5a52');
+      volcano(g, 1500, 420, 180, 170, '#86655c');
+      hills(g, w, 440, '#9c7a63', [[3, 14, 0.5], [7, 6, 1.8]]);
+    },
+    mid: (g, w) => {
+      brachio(g, 350);
+      stego(g, 900);
+      for (const [x, h] of [[120, 120], [560, 150], [640, 110], [1160, 140], [1650, 130], [1820, 100]]) cycad(g, x, B, h);
+      for (const x of [220, 760, 1060, 1300, 1450, 1740]) fern(g, x, B, 1);
+      g.fillStyle = '#f5f0e1'; for (const [x, y] of [[1380, -12], [1396, -10], [1388, -22]]) { g.beginPath(); g.ellipse(x, B + y, 8, 11, 0, 0, Math.PI * 2); g.fill(); }
+      g.strokeStyle = '#8d6e63'; g.lineWidth = 4; g.beginPath(); g.ellipse(1390, B - 6, 26, 8, 0, 0, Math.PI); g.stroke();
+    },
+    ground: (g, w) => {
+      g.fillStyle = '#8d6e4f'; g.fillRect(0, B - 4, w, H - B + 4);
+      g.fillStyle = '#6d8f3a'; g.fillRect(0, B - 4, w, 6);
+      g.strokeStyle = '#ff7043'; g.lineWidth = 3;
+      for (const x of [140, 520, 830]) { g.beginPath(); g.moveTo(x, B + 14); g.lineTo(x + 20, B + 24); g.lineTo(x + 10, B + 36); g.lineTo(x + 34, B + 44); g.stroke(); }
+      g.fillStyle = '#efe6d2';
+      for (const x of [300, 690]) { g.fillRect(x, B + 22, 34, 6); g.beginPath(); g.arc(x, B + 25, 6, 0, Math.PI * 2); g.arc(x + 34, B + 25, 6, 0, Math.PI * 2); g.fill(); }
+      g.fillStyle = '#5b8a32'; for (let x = 10; x < w; x += 29) { g.beginPath(); g.moveTo(x, B + 2); g.lineTo(x + 4, B - 12); g.lineTo(x + 8, B + 2); g.fill(); }
+    },
+  };
+
+  const STAGES = [seoul, boston, daejeon, newyork, playground, paris, london, chicago, la, space,
+    sanfrancisco, washington, sejong, madrid, dinosaur];
   const cache = [];
   const TWINKLE = (() => { const r = rng(5); return Array.from({ length: 60 }, () => ({ x: r() * W, y: r() * 440, r: 1 + r() * 1.8, sp: 1 + r() * 3, ph: r() * 6 })); })();
 

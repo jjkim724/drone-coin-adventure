@@ -20,6 +20,7 @@
     invulnTime: 1.6,      // 부딪힌 뒤 잠깐 무적인 시간(초)
     abilityUses: 3,       // 특수 기능 사용 횟수 (한 판에)
     unlockAllStages: true, // true면 모든 단계를 잠금 없이 고를 수 있음
+    unlockAllDrones: true, // true면 36종 드론을 처음부터 모두 고를 수 있음
     stages: [
       // target: 클리어 코인, speed: 흐르는 속도, interval: 새 무리 간격(초)
       // edge: 새 한 마리가 1층/5층에 나올 확률, box: 랜덤박스 확률
@@ -80,7 +81,7 @@
   let owned = new Set();
   try { owned = new Set(JSON.parse(store.read('droneCoin.owned', '[]'))); } catch (e) { owned = new Set(); }
   const saveOwned = () => store.write('droneCoin.owned', JSON.stringify([...owned]));
-  const canUse = (s) => DRONES.isAvailable(s, unlocked, owned);
+  const canUse = (s) => CONFIG.unlockAllDrones || DRONES.isAvailable(s, unlocked, owned);
   const stageOpen = (i) => CONFIG.unlockAllStages || i + 1 <= unlocked;
   let skinId = store.read('droneCoin.skin', 'orange');
   if (DRONES.get(skinId).id !== skinId || !canUse(DRONES.get(skinId))) skinId = 'orange';
@@ -263,7 +264,7 @@
     }).join('');
     const count = DRONES.skins.filter(canUse).length;
     showPanel(`
-      <h2>🚁 ${startIdx + 1}단계 · 내 드론을 골라요! <small>(${count} / ${DRONES.skins.length}) · 🎁선물박스·⭐별로 새 드론!</small></h2>
+      <h2>🚁 ${startIdx + 1}단계 · 내 드론을 골라요! <small>(${count} / ${DRONES.skins.length})${CONFIG.unlockAllDrones ? '' : ' · 🎁선물박스·⭐별로 새 드론!'}</small></h2>
       <p class="abInfo" id="abInfo">${abilityText(skin())}</p>
       <div class="droneGrid">${cards}</div>
     `, [
@@ -316,9 +317,9 @@
   const NEXT_TIPS = {
     1: '⚠️ 2단계부터는 맨 아래(1층)와 맨 위(5층)에도 새가 나타나요!',
     2: '🎁 3단계부터는 <b>랜덤박스</b>가 나와요! 코인이 0~5개 들어 있어요.',
-    5: '🐦 6단계부터는 새가 <b>위아래로 움직여요!</b> 🎁 빨간 <b>선물박스</b>를 잡으면 새 드론을 얻어요!',
+    5: `🐦 6단계부터는 새가 <b>위아래로 움직여요!</b> 🎁 빨간 <b>선물박스</b>를 잡으면 ${CONFIG.unlockAllDrones ? '코인 보너스!' : '새 드론을 얻어요!'}`,
     6: '🐦 7단계부터는 새가 1층~5층 전체를 위아래로 움직여요!',
-    7: '⭐ 8단계부터는 가끔 <b>별</b>이 나와요! 별을 잡으면 반짝이는 특별한 드론을 얻어요!',
+    7: `⭐ 8단계부터는 가끔 <b>별</b>이 나와요! 별을 잡으면 ${CONFIG.unlockAllDrones ? '코인 보너스!' : '반짝이는 특별한 드론을 얻어요!'}`,
     9: '👨‍🚀 10단계는 <b>우주</b>! 새들도 우주복을 입었어요!',
     10: '↗️ 11단계부터는 새가 <b>대각선</b>으로도 날아요!',
     14: '🦖 마지막 15단계는 <b>공룡시대</b>! 코인 40개를 모으면… 무슨 일이 생길까요?',
@@ -436,7 +437,8 @@
 
   // 선물박스/별을 잡았을 때: 아직 없는 드론 1개 획득
   function grantSkin(kind, o) {
-    const pool = DRONES.skins.filter((s) => s.source === kind && !owned.has(s.id));
+    // 드론이 모두 열려 있으면(unlockAllDrones) 대신 코인 보너스
+    const pool = CONFIG.unlockAllDrones ? [] : DRONES.skins.filter((s) => s.source === kind && !owned.has(s.id));
     burst(o.x, o.y, ['#ffd700', '#ffffff', '#ff80ab', '#80d8ff', '#b9f6ca'], 30, 300);
     if (pool.length) {
       const s = pick(pool);
@@ -446,7 +448,7 @@
     } else {
       const n = kind === 'star' ? 5 : 3;
       addCoins(n); Sound.box(n);
-      floatText(o.x, o.y - 26, `${kind === 'star' ? '⭐' : '🎁'} 드론을 다 모았어요! +${n}개`, '#ff6d00', 28);
+      floatText(o.x, o.y - 26, `${kind === 'star' ? '⭐ 별' : '🎁 선물'} 보너스! +${n}개`, '#ff6d00', 30);
     }
   }
   const addCoins = (n) => { coins += fx.double > 0 ? n * 2 : n; };
